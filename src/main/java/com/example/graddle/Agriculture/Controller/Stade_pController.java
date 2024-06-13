@@ -2,6 +2,7 @@ package com.example.graddle.Agriculture.Controller;
 
 
 import com.example.graddle.Agriculture.DTO.DiagDTO;
+import com.example.graddle.Agriculture.DTO.Stade_pDTO;
 import com.example.graddle.Agriculture.Entities.Stade_pEntity;
 import com.example.graddle.Agriculture.Payload.Stade_pRequest;
 import com.example.graddle.Agriculture.Services.Stade_pService;
@@ -42,6 +43,23 @@ public class Stade_pController {
             diagDTOS.add(diagDTO);
         }
         return diagDTOS;
+    }
+
+    @GetMapping("/getAll")
+    public List<Stade_pDTO> getAll(){
+        List<Object[]> stades = stade_pService.getAll();
+        List<Stade_pDTO> stade_pDTOS = new ArrayList<>();
+        for (Object[] stade : stades){
+            Stade_pDTO stade_pDTO = new Stade_pDTO();
+            stade_pDTO.setId_cultiver((Integer) stade[0]);
+            stade_pDTO.setEtape((String) stade[1]);
+            stade_pDTO.setDate_debut((Date) stade[2]);
+            stade_pDTO.setDate_fin((Date) stade[3]);
+            stade_pDTO.setBesoin_e((Double) stade[4]);
+            stade_pDTOS.add(stade_pDTO);
+
+        }
+        return stade_pDTOS;
     }
 
 }

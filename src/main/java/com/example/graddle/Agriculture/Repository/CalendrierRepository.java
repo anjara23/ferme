@@ -13,6 +13,9 @@ public interface CalendrierRepository extends JpaRepository<CalendrierEntity, In
     @Query(value = "SELECT *  FROM public.calendrier WHERE EXTRACT(MONTH FROM calendrier.date_debut) = :mois OR  EXTRACT(MONTH FROM calendrier.date_fin) = :mois ", nativeQuery = true)
     List<CalendrierEntity> getByMonth(Integer mois);
 
+    @Query(value = "SELECT *  FROM public.calendrier ", nativeQuery = true)
+    List<CalendrierEntity> getAll();
+
     @Query(value = "SELECT * FROM public.calendrier WHERE  calendrier.date_debut = :auj", nativeQuery = true)
     List<CalendrierEntity> getDeb(Date auj);
 

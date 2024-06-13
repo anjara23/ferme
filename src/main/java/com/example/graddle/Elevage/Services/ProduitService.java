@@ -175,7 +175,7 @@ public class ProduitService {
 
     }
 
-    public List<Object[]> getAllProd(){
+    public List<ProduitEntity> getAllProd(){
         return produitRepository.getAllProd();
     }
 

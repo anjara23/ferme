@@ -8,8 +8,8 @@ import java.util.List;
 
 public interface ProduitRepository extends JpaRepository<ProduitEntity, Integer> {
 
-    @Query(value = "SELECT id_produit, type_produit, quantite, qualite, date_prod FROM public.produit", nativeQuery = true)
-    List<Object[]> getAllProd();
+    @Query(value = "SELECT * FROM public.produit", nativeQuery = true)
+    List<ProduitEntity> getAllProd();
 
     @Query(value = "SELECT id_produit, type_produit, quantite, qualite, date_prod FROM public.produit WHERE type_produit = :type_produit", nativeQuery = true)
     List<Object[]>getByType(String type_produit);

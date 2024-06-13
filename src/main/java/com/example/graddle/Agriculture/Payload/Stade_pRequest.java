@@ -1,5 +1,6 @@
 package com.example.graddle.Agriculture.Payload;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,12 @@ public class Stade_pRequest {
 
     private Integer id_cultiver;
     private String etape;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date date_debut;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date date_fin;
+
     private Double besoin_e;
 }

@@ -2,6 +2,7 @@ package com.example.graddle.Agriculture.DTO;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,8 +17,13 @@ import java.util.Date;
 public class AgendaDTO {
 
     private String activite;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date date_debut;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date date_fin;
+
     private String description;
 
 }

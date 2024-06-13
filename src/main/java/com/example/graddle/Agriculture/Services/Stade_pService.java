@@ -55,6 +55,10 @@ public class Stade_pService {
         return stade_pRepository.diagSt(id_cultiver);
     }
 
+    public List<Object[]> getAll(){
+        return stade_pRepository.getAll();
+    }
+
 
     public void deleteStade(Integer id_cultiver){
         Optional<Stade_pEntity> stade = stade_pRepository.getByIdcul(id_cultiver);

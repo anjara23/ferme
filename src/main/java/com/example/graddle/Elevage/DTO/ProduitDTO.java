@@ -2,6 +2,8 @@ package com.example.graddle.Elevage.DTO;
 
 
 import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,5 +18,9 @@ public class ProduitDTO {
     private String type_produit;
     private Double quantite;
     private Integer qualite;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date date_prod;
+
+    private String especef;
 }

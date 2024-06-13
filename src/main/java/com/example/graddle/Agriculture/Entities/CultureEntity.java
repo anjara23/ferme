@@ -1,5 +1,6 @@
 package com.example.graddle.Agriculture.Entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,9 +28,15 @@ public class CultureEntity {
     @JoinColumn(name = "id_plante", referencedColumnName = "id_plante" ,nullable = false) // Not null for foreign key
     private PlanteEntity plante;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date date_plantation;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date date_production;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date date_recolte;
+
     private Double produit_kg;
     private Double nb_planter;
     private Double surface_c;

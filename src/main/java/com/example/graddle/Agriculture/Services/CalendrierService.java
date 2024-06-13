@@ -61,6 +61,10 @@ public class CalendrierService {
         return calendrierRepository.getByMonth(mois);
     }
 
+    public List<CalendrierEntity> getAll(){
+        return calendrierRepository.getAll();
+    }
+
     public List<String> notifDeb() {
         List<String> notifications = new ArrayList<>();
         Date auj = new Date();

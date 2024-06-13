@@ -1,5 +1,6 @@
 package com.example.graddle.Elevage.Entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,13 +26,22 @@ public class SanteEntity {
     private AnimalEntity id_animal;
 
     private boolean vaccin;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date date_vacc;
+
     private boolean vermifuge;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date date_verm;
+
     private String maladie;
     private String blessure;
     private String traitement;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date date_trait;
+
     private Integer etat;
     private Boolean gestation;
 

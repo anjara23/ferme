@@ -3,6 +3,7 @@ package com.example.graddle.Elevage.Controller;
 
 import com.example.graddle.Elevage.DTO.DiagProDTO;
 import com.example.graddle.Elevage.DTO.ProduitDTO;
+import com.example.graddle.Elevage.Entities.ProduitEntity;
 import com.example.graddle.Elevage.Payload.ProduitRequest;
 import com.example.graddle.Elevage.Services.ProduitService;
 import lombok.RequiredArgsConstructor;
@@ -36,19 +37,17 @@ public class ProduitController {
 
     @GetMapping("/getAll")
     public List<ProduitDTO> getAllProd() {
-        List<Object[]> produits = produitService.getAllProd();
+        List<ProduitEntity> produits = produitService.getAllProd();
         List<ProduitDTO> produitDTOS = new ArrayList<>();
-        for (Object[] produit : produits) {
+        for (ProduitEntity produit : produits) {
             ProduitDTO produitDTO = new ProduitDTO();
-            produitDTO.setId_produit((Integer) produit[0]);
-            produitDTO.setType_produit((String) produit[1]);
-            if (produit[2] != null) {
-                produitDTO.setQuantite(((Number) produit[2]).doubleValue());
-            } else {
-                produitDTO.setQuantite(null);
-            }
-            produitDTO.setQualite((Integer) produit[3]);
-            produitDTO.setDate_prod((Date) produit[4]);
+            produitDTO.setId_produit(produit.getId_produit());
+            produitDTO.setType_produit(produit.getType_produit());
+            produitDTO.setQuantite(produit.getQuantite());
+            produitDTO.setQualite(produit.getQualite());
+            produitDTO.setDate_prod(produit.getDate_prod());
+            produitDTO.setEspecef(produit.getEspecef());
+
             produitDTOS.add(produitDTO);
         }
         return produitDTOS;

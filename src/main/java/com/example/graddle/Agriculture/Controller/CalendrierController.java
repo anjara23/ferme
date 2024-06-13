@@ -47,6 +47,11 @@ public class CalendrierController {
         return calendrierDTOS;
     }
 
+    @GetMapping("/getAll")
+    public List<CalendrierEntity> getAll(){
+        return calendrierService.getAll();
+    }
+
     @GetMapping("/notifDeb")
     public List<String> notifDeb(){ return calendrierService.notifDeb(); }
 

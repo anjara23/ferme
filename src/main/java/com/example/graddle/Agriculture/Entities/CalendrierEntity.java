@@ -1,5 +1,6 @@
 package com.example.graddle.Agriculture.Entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,7 +25,12 @@ public class CalendrierEntity {
     private PlanteEntity plante;
 
     private String activite;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date date_debut;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date date_fin;
+
     private String description;
 }

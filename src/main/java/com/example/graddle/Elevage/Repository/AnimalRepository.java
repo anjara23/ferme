@@ -35,10 +35,10 @@ public interface AnimalRepository extends JpaRepository<AnimalEntity,Integer> {
 
     //tokony soloina nouveaux-nés ilay teratany na izay ni-nommer-na anazy de otranzay koa le achat
     @Query(value = "SELECT \n" +
-            "    COUNT(CASE WHEN statut = 'Achat' THEN id_animal ELSE NULL END) AS achat,\n" +
+            "    COUNT(CASE WHEN statut = 'Acheté' THEN id_animal ELSE NULL END) AS achat,\n" +
             "    COUNT(CASE WHEN date_vente IS NOT NULL THEN id_animal ELSE NULL END) AS vendu,\n" +
             "    COUNT(CASE WHEN date_dec IS NOT NULL THEN id_animal ELSE NULL END) AS deces,\n" +
-            "    COUNT(CASE WHEN statut = 'teratany' THEN id_animal ELSE NULL END) AS nouv\n" +
+            "    COUNT(CASE WHEN statut = 'Acquis' THEN id_animal ELSE NULL END) AS nouv\n" +
             "FROM \n" +
             "    public.animal WHERE espece = :espece", nativeQuery = true)
     List<Object[]> diagAni(String espece);
