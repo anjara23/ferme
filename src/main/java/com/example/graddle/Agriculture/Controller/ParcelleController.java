@@ -123,7 +123,19 @@ public class ParcelleController {
     }
 
     @GetMapping("/getPlanter")
-    public List<Object[]> getPlanter(){
-        return parcelleService.getPlanter();
+    public List<ParcelleDTO> getPlanter(){
+        List<ParcelleEntity> parc = parcelleService.getPlanter();
+        List<ParcelleDTO> parcelleDTOs = new ArrayList<>();
+        for (ParcelleEntity parcelle : parc) {
+            ParcelleDTO parcelleDTO = new ParcelleDTO();
+            parcelleDTO.setCode_parcelle(parcelle.getCode_parcelle());
+            parcelleDTO.setLatitude(parcelle.getLatitude());
+            parcelleDTO.setLongitude(parcelle.getLongitude());
+            parcelleDTO.setType_sol(parcelle.getType_sol());
+            parcelleDTO.setType_culture_avant(parcelle.getType_culture_avant());
+            parcelleDTO.setSurface(parcelle.getSurface());
+            parcelleDTOs.add(parcelleDTO);
+        }
+        return parcelleDTOs;
     }
 }

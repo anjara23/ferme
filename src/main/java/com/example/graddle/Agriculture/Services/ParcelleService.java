@@ -122,7 +122,7 @@ public class ParcelleService {
         }
     }
 
-    public List<Object[]> getPlanter() {
+    public List<ParcelleEntity> getPlanter() {
         try {
             return parcelleRepository.getPlanter();
         } catch (Exception e) {

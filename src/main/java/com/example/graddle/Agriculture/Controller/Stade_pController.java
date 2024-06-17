@@ -20,15 +20,16 @@ public class Stade_pController {
 
     private final Stade_pService stade_pService;
 
-    @PostMapping("/addStade")
-    public void addStade(@RequestBody Stade_pRequest stade_pRequest){
-        stade_pService.addStade(stade_pRequest);
+    @PostMapping("/addStade/{id_stade}")
+    public void addStade(@PathVariable Integer id_stade, @RequestBody Stade_pRequest stade_pRequest){
+        stade_pService.addStade(id_stade, stade_pRequest);
     }
 
     @PutMapping("/updateS/{id_stade}")
     public void updateStade(@PathVariable Integer id_stade, @RequestBody Stade_pRequest stade_pRequest){
         stade_pService.updateStade(id_stade,stade_pRequest);
     }
+
 
     @GetMapping("/diagSt/{id_cultiver}")
     public List<DiagDTO> diagSt(@PathVariable Integer id_cultiver){

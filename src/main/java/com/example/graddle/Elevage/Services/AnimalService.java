@@ -230,7 +230,13 @@ public class AnimalService {
 
     public void delete(Integer id_animal) {
         try {
-            // Vérifier si l'animal existe et le supprimer
+
+            List<SanteEntity> santeList = santeRepository.findByIdAnimal(id_animal);
+            if (!santeList.isEmpty()) {
+                SanteEntity sante = santeList.get(0);
+                santeRepository.delete(sante);
+            }
+
             Optional<AnimalEntity> optionalAnimal = animalRepository.findById(id_animal);
             if (optionalAnimal.isPresent()) {
                 AnimalEntity animal = optionalAnimal.get();
@@ -239,12 +245,8 @@ public class AnimalService {
                 throw new EntityNotFoundException("AnimalEntity with id " + id_animal + " not found");
             }
 
-            // Vérifier si des données de santé existent pour cet animal et les supprimer
-            List<SanteEntity> santeList = santeRepository.findByIdAnimal(id_animal);
-            if (!santeList.isEmpty()) {
-                SanteEntity sante = santeList.get(0);
-                santeRepository.delete(sante);
-            }
+
+
         } catch (Exception e) {
             throw new RuntimeException("Failed to delete animal and its health data", e);
         }

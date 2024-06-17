@@ -18,7 +18,7 @@ public class Stade_pService {
     private final Stade_pRepository stade_pRepository;
 
 
-    public void addStade(Stade_pRequest stade_pRequest) {
+  /*  public void addStade(Stade_pRequest stade_pRequest) {
         try {
             Stade_pEntity stade = new Stade_pEntity();
 
@@ -37,8 +37,7 @@ public class Stade_pService {
         } catch (Exception e) {
             throw new RuntimeException("Failed to add stade_pEntity", e);
         }
-    }
-
+    }*/
 
     public void updateStade(Integer id_stade, Stade_pRequest stade_pRequest) {
         try {
@@ -58,6 +57,42 @@ public class Stade_pService {
             throw new RuntimeException("Failed to update stade_pEntity with id " + id_stade, e);
         }
     }
+
+    public void addStade(Integer id_stade, Stade_pRequest stade_pRequest) {
+        try {
+            // 1. Recherche de l'entité existante
+            Optional<Stade_pEntity> stadeOptional = stade_pRepository.findById(id_stade);
+            if (!stadeOptional.isPresent()) {
+                throw new EntityNotFoundException("Stade_PEntity with id " + id_stade + " not found");
+            }
+
+            // 2. Mise à jour de l'entité existante
+            Stade_pEntity stadeToUpdate = stadeOptional.get();
+            stadeToUpdate.setEtape(stadeToUpdate.getEtape());
+            stadeToUpdate.setDate_debut(stadeToUpdate.getDate_debut());
+            stadeToUpdate.setDate_fin(stade_pRequest.getDate_fin()); // Mise à jour de date_fin
+            stadeToUpdate.setBesoin_e(stade_pRequest.getBesoin_e()); // Mise à jour de besoin_e
+
+            stade_pRepository.save(stadeToUpdate); // Sauvegarde de l'entité mise à jour
+
+            // 3. Ajout d'une nouvelle entité avec date_debut égal à date_fin mis à jour
+            Stade_pEntity newStade = new Stade_pEntity();
+
+            CultureEntity cult = new CultureEntity();
+            cult.setId_cultiver(stade_pRequest.getId_cultiver());
+
+            newStade.setCulture(cult);
+            newStade.setEtape(stade_pRequest.getEtape());
+            newStade.setDate_debut(stadeToUpdate.getDate_fin());
+            newStade.setBesoin_e(null);
+
+            stade_pRepository.save(newStade); // Sauvegarde de la nouvelle entité
+
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to update and add Stade_pEntity with id " + id_stade, e);
+        }
+    }
+
 
     public List<Object[]> diagSt(Integer id_cultiver) {
         try {

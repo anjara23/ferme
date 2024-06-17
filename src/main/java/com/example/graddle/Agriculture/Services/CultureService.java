@@ -127,8 +127,10 @@ public class CultureService {
 
             // ilaina any am calendrier
             Integer id_plante = cult.getPlante().getId_plante();
-            String variete = planteRepository.getVar(id_plante);
-            String type_plante = planteRepository.getByIdP(id_plante);
+
+           String variete = planteRepository.getVar(id_plante);
+           String type_plante = planteRepository.getByIdP(id_plante);
+
 
             Integer code_parcelle = cult.getParcelle().getCode_parcelle();
             Double nb_cult = cult.getNb_planter();

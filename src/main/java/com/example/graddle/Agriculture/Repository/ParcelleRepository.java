@@ -26,5 +26,5 @@ public interface ParcelleRepository extends JpaRepository<ParcelleEntity, Intege
     List<ParcelleEntity> getDispo();
 
     @Query(value = "SELECT p.* FROM public.parcelle p LEFT JOIN public.culture c ON p.code_parcelle = c.code_parcelle WHERE c.id_cultiver IS NOT NULL ", nativeQuery = true)
-    List<Object[]> getPlanter();
+    List<ParcelleEntity> getPlanter();
 }

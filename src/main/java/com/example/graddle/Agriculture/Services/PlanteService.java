@@ -41,6 +41,19 @@ public class PlanteService {
 
             PlanteEntity plante = p.get();
 
+            if(planteRequest.getType_plante() == null){
+                plante.setType_plante(plante.getType_plante());
+            }
+            if (planteRequest.getVariete() == null){
+                plante.setVariete(plante.getVariete());
+            }
+            if(planteRequest.getDescription() == null){
+                plante.setDescription(plante.getDescription());
+            }
+            if(planteRequest.getNbr_plante() == null){
+                plante.setNbr_plante(plante.getNbr_plante());
+            }
+
             plante.setType_plante(planteRequest.getType_plante());
             plante.setVariete(planteRequest.getVariete());
             plante.setDescription(planteRequest.getDescription());
