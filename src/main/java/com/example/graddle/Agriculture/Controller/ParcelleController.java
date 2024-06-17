@@ -28,6 +28,7 @@ public class ParcelleController {
         parcelleService.updateParcelle(code_parcelle, parcelleRequest);
     }
 
+    //get niova post
     @GetMapping("/getEspaceL/{code_parcelle}")
     public Double getEspaceL(@PathVariable Integer code_parcelle){
         return parcelleService.getEspaceL(code_parcelle);
@@ -49,6 +50,7 @@ public class ParcelleController {
         }
         return parcelleDTOs;    }
 
+    //get niova post
     @GetMapping("/getByType/{type_sol}")
     public List<ParcelleDTO> getByType(@PathVariable String type_sol){
         List<ParcelleEntity> parc =  parcelleService.getByType(type_sol);

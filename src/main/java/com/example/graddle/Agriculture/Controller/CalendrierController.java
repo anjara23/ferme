@@ -30,7 +30,8 @@ public class CalendrierController {
         calendrierService.updateCalendrier(id_calendrier, calendrierRequest);
     }
 
-    @GetMapping("/getByMonth/{mois}")
+    //niova post zao le eto
+    @PostMapping("/getByMonth/{mois}")
     public List<CalendrierDTO> getByMonth(@PathVariable Integer mois){
         List<CalendrierEntity> cal = calendrierService.getByMonth(mois);
         List<CalendrierDTO> calendrierDTOS = new ArrayList<>();

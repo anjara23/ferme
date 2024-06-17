@@ -46,9 +46,9 @@ public class ProductionService {
         return monthsAndKPI;
     }
 
-    public ProductionEntity addKPI(ProductionRequest productionRequest){
-
-        ProductionEntity production = new ProductionEntity();
+    public ProductionEntity addKPI(ProductionRequest productionRequest) {
+        try {
+            ProductionEntity production = new ProductionEntity();
 
             Integer id_produit = productionRequest.getId_produit();
 
@@ -63,27 +63,29 @@ public class ProductionService {
 
             Integer ttlAni = animalRepository.aniUntilMonth(mois, espece);
             Double kpi = null;
-                if (ttlAni != null && ttlAni > 0) {
-                    if (kpi == null) {
-                        kpi = 0.0;
-                    }
-                    kpi += ttlQ / ttlAni;
-                } else {
+            if (ttlAni != null && ttlAni > 0) {
+                if (kpi == null) {
                     kpi = 0.0;
                 }
+                kpi += ttlQ / ttlAni;
+            } else {
+                kpi = 0.0;
+            }
 
-
-        //ajout table
+            // Ajout des données dans l'entité ProductionEntity
             production.setProduit(produit);
             production.setType_produit(type_produit);
             production.setEspece(espece);
             production.setMois(mois);
             production.setKpi(kpi);
 
-          ProductionEntity prod =  productionRepository.save(production);
+            // Sauvegarde dans la base de données
+            ProductionEntity prod = productionRepository.save(production);
 
-          return prod;
-
+            return prod;
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur lors de l'ajout du KPI de production : " + e.getMessage(), e);
+        }
     }
 
     public void updateKPI(ProductionRequest productionRequest) {
@@ -96,42 +98,44 @@ public class ProductionService {
         System.out.println("Paramètres de recherche - Mois: " + mois + ", Type de produit: " + type_produit + ", Espèce: " + espece);
 
         // Recherche de l'enregistrement existant
-       Optional<ProductionEntity>  existe = productionRepository.findById_produit(id_produit);
+        Optional<ProductionEntity> existe = productionRepository.findById_produit(id_produit);
 
         if (existe.isPresent()) {
+            try {
+                ProductionEntity production = existe.get();
 
-            ProductionEntity production = existe.get();
-            // Obtenez la somme de la quantité produite pour le mois et le type de produit spécifiés
-            Double ttlQ = produitRepository.sumQMonth(mois, type_produit);
+                // Obtenez la somme de la quantité produite pour le mois et le type de produit spécifiés
+                Double ttlQ = produitRepository.sumQMonth(mois, type_produit);
 
-            // Obtenez le nombre total d'animaux jusqu'au mois spécifié pour l'espèce donnée
-            Integer ttlAni = animalRepository.aniUntilMonth(mois, espece);
+                // Obtenez le nombre total d'animaux jusqu'au mois spécifié pour l'espèce donnée
+                Integer ttlAni = animalRepository.aniUntilMonth(mois, espece);
 
-            // Afficher les valeurs de `ttlQ` et `ttlAni`
-            System.out.println("Somme de la quantité produite (ttlQ): " + ttlQ);
-            System.out.println("Nombre total d'animaux (ttlAni): " + ttlAni);
+                // Afficher les valeurs de `ttlQ` et `ttlAni`
+                System.out.println("Somme de la quantité produite (ttlQ): " + ttlQ);
+                System.out.println("Nombre total d'animaux (ttlAni): " + ttlAni);
 
-            Double kpi = 0.0;
+                Double kpi = 0.0;
 
-            if (ttlAni != null && ttlAni > 0 && ttlQ != null) {
-                kpi = ttlQ / ttlAni;
-            } else {
-                System.out.println("Erreur: `ttlQ` ou `ttlAni` est nul ou `ttlAni` est inférieur à 1");
+                if (ttlAni != null && ttlAni > 0 && ttlQ != null) {
+                    kpi = ttlQ / ttlAni;
+                } else {
+                    System.out.println("Erreur: `ttlQ` ou `ttlAni` est nul ou `ttlAni` est inférieur à 1");
+                }
+
+                // Afficher la valeur de `kpi`
+                System.out.println("Valeur calculée de KPI: " + kpi);
+
+                // Mettre à jour le KPI dans l'entité existante et sauvegarder
+                production.setKpi(kpi);
+                production.setType_produit(type_produit);
+
+                ProductionEntity modif = productionRepository.save(production);
+                if (modif != null) {
+                    System.out.println("KPI mis à jour avec succès pour l'enregistrement existant.");
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("Erreur lors de la mise à jour du KPI de production : " + e.getMessage(), e);
             }
-
-            // Afficher la valeur de `kpi`
-            System.out.println("Valeur calculée de KPI: " + kpi);
-
-            // Mettre à jour le KPI dans l'entité existante et sauvegarder
-            production.setKpi(kpi);
-            production.setType_produit(type_produit);
-
-           ProductionEntity modif = productionRepository.save(production);
-           if(modif !=null){
-               System.out.println("KPI mis à jour avec succès pour l'enregistrement existant.");
-
-           }
-
         } else {
             System.out.println("Aucun enregistrement existant trouvé pour les paramètres spécifiés.");
         }

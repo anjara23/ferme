@@ -17,77 +17,109 @@ public class PlanteService {
     private final PlanteRepository planteRepository;
 
 
-    public void  addPlante(PlanteRequest planteRequest){
-        PlanteEntity plante = new PlanteEntity();
+    public void addPlante(PlanteRequest planteRequest) {
+        try {
+            PlanteEntity plante = new PlanteEntity();
 
-        plante.setType_plante(planteRequest.getType_plante());
-        plante.setVariete(planteRequest.getVariete());
-        plante.setDescription(planteRequest.getDescription());
-        plante.setNbr_plante(planteRequest.getNbr_plante());
+            plante.setType_plante(planteRequest.getType_plante());
+            plante.setVariete(planteRequest.getVariete());
+            plante.setDescription(planteRequest.getDescription());
+            plante.setNbr_plante(planteRequest.getNbr_plante());
 
-        planteRepository.save(plante);
+            planteRepository.save(plante);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to add plante", e);
+        }
     }
 
-    public void updatePlante(Integer id_plante, PlanteRequest planteRequest){
-        Optional<PlanteEntity> p = planteRepository.findById(id_plante);
-        if (!p.isPresent()){
-            throw new EntityNotFoundException("PlanteEntity with id " + id_plante + " not found");
+    public void updatePlante(Integer id_plante, PlanteRequest planteRequest) {
+        try {
+            Optional<PlanteEntity> p = planteRepository.findById(id_plante);
+            if (!p.isPresent()) {
+                throw new EntityNotFoundException("PlanteEntity with id " + id_plante + " not found");
+            }
+
+            PlanteEntity plante = p.get();
+
+            plante.setType_plante(planteRequest.getType_plante());
+            plante.setVariete(planteRequest.getVariete());
+            plante.setDescription(planteRequest.getDescription());
+            plante.setNbr_plante(planteRequest.getNbr_plante());
+
+            planteRepository.save(plante);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to update plante with id " + id_plante, e);
         }
-
-        PlanteEntity plante = p.get();
-
-        plante.setType_plante(planteRequest.getType_plante());
-        plante.setVariete(planteRequest.getVariete());
-        plante.setDescription(planteRequest.getDescription());
-        plante.setNbr_plante(planteRequest.getNbr_plante());
-
-        planteRepository.save(plante);
-
     }
 
     public void updateNbP(Integer id_plante, Double x) {
-        Optional<PlanteEntity> p = planteRepository.findById(id_plante);
-        if (!p.isPresent()) {
-            throw new EntityNotFoundException("PlanteEntity with id " + id_plante + " not found");
+        try {
+            Optional<PlanteEntity> p = planteRepository.findById(id_plante);
+            if (!p.isPresent()) {
+                throw new EntityNotFoundException("PlanteEntity with id " + id_plante + " not found");
+            }
+
+            PlanteEntity plante = p.get();
+
+            Double nbr = plante.getNbr_plante();
+            Double nbr_plante = nbr - x;
+
+            if (nbr_plante <= 0) {
+                nbr_plante = 0.0; // Si nbr_plante est négatif, le mettre à 0
+            }
+
+            plante.setNbr_plante(nbr_plante);
+            planteRepository.save(plante);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to update nbr_plante for plante with id " + id_plante, e);
         }
-        PlanteEntity plante = p.get();
+    }
 
-        Double nbr = plante.getNbr_plante();
-        Double nbr_plante = nbr - x;
-
-        if (nbr_plante <= 0) {
-            nbr_plante = 0.0; // Si nbr_plante est négatif, le mettre à 0
+    public List<PlanteEntity> getAllPlante() {
+        try {
+            return planteRepository.getAllPlante();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to fetch all plante entities", e);
         }
-
-        plante.setNbr_plante(nbr_plante);
-        planteRepository.save(plante);
     }
 
-    public List<PlanteEntity> getAllPlante(){
-        return planteRepository.getAllPlante();
-    }
-
-    public List<PlanteEntity> getByTypePlante(String type_plante){
-        return planteRepository.getByTypePlante(type_plante);
-    }
-
-    public List<PlanteEntity> getByVariete(String variete){
-        return planteRepository.getByVariete(variete);
-    }
-
-    public void deletePlante(Integer id_plante){
-        Optional<PlanteEntity> p = planteRepository.findById(id_plante);
-        if (!p.isPresent()){
-            throw new EntityNotFoundException("PlanteEntity with id " + id_plante + " not found");
+    public List<PlanteEntity> getByTypePlante(String type_plante) {
+        try {
+            return planteRepository.getByTypePlante(type_plante);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to fetch plante entities by type_plante: " + type_plante, e);
         }
-
-        PlanteEntity plante = p.get();
-
-        planteRepository.delete(plante);
     }
 
-    public List<Object[]> getIdType(){
-        return planteRepository.getIdType();
+    public List<PlanteEntity> getByVariete(String variete) {
+        try {
+            return planteRepository.getByVariete(variete);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to fetch plante entities by variete: " + variete, e);
+        }
+    }
+
+    public void deletePlante(Integer id_plante) {
+        try {
+            Optional<PlanteEntity> p = planteRepository.findById(id_plante);
+            if (!p.isPresent()) {
+                throw new EntityNotFoundException("PlanteEntity with id " + id_plante + " not found");
+            }
+
+            PlanteEntity plante = p.get();
+
+            planteRepository.delete(plante);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to delete plante with id " + id_plante, e);
+        }
+    }
+
+    public List<Object[]> getIdType() {
+        try {
+            return planteRepository.getIdType();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to fetch id and type from plante entities", e);
+        }
     }
 
 }

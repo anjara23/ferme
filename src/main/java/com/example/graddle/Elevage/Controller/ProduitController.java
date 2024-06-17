@@ -75,7 +75,8 @@ public class ProduitController {
         return produitDTOS;
     }
 
-    @GetMapping("/diagQ/{type_prod}")
+    //get niova Post
+    @PostMapping("/diagQ/{type_prod}")
     public List<DiagProDTO> diagQ(@PathVariable String type_prod){
         List<Object[]> produits =  produitService.diagQ(type_prod);
         List<DiagProDTO> produitDTOS = new ArrayList<>();

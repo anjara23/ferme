@@ -30,44 +30,43 @@ public class CultureService {
 
 
 
-    public void addCulture(CultureRequest cultureRequest){
+    public void addCulture(CultureRequest cultureRequest) {
+        try {
+            CultureEntity cult = new CultureEntity();
 
-        CultureEntity cult = new CultureEntity();
+            Integer code_parcelle = cultureRequest.getCode_parcelle();
+            Integer id_plante = cultureRequest.getId_plante();
 
-        Integer code_parcelle = cultureRequest.getCode_parcelle() ;
-        Integer id_plante = cultureRequest.getId_plante();
+            ParcelleEntity parc = new ParcelleEntity();
+            parc.setCode_parcelle(code_parcelle);
 
-        ParcelleEntity parc  = new ParcelleEntity();
-        parc.setCode_parcelle(code_parcelle);
+            PlanteEntity plante = new PlanteEntity();
+            plante.setId_plante(id_plante);
 
-        PlanteEntity plante = new PlanteEntity();
-        plante.setId_plante(id_plante);
+            // ilaina any am calendrier
+            String variete = planteRepository.getVar(id_plante);
+            String type_plante = planteRepository.getByIdP(id_plante);
 
-        //ilaina any am calendrier
-        String variete = planteRepository.getVar(id_plante);
-        String type_plante = planteRepository.getByIdP(id_plante);
-
-            //modif type_avant
+            // modif type_avant
             System.out.print(type_plante);
             parcelleService.updateTypeAvant(code_parcelle, type_plante);
 
-        cult.setParcelle(parc);
-        cult.setPlante(plante);
-        cult.setDate_plantation(cultureRequest.getDate_plantation());
-        cult.setDate_production(cultureRequest.getDate_production());
-        cult.setDate_recolte(cultureRequest.getDate_recolte());
-        cult.setProduit_kg(cultureRequest.getProduit_kg());
+            cult.setParcelle(parc);
+            cult.setPlante(plante);
+            cult.setDate_plantation(cultureRequest.getDate_plantation());
+            cult.setDate_production(cultureRequest.getDate_production());
+            cult.setDate_recolte(cultureRequest.getDate_recolte());
+            cult.setProduit_kg(cultureRequest.getProduit_kg());
 
-
-        Double nb = cultureRequest.getNb_planter();
+            Double nb = cultureRequest.getNb_planter();
             // Modification du nombre de plantes si différent de zéro
             if (nb == null || nb == 0.0) {
                 throw new IllegalArgumentException("Le nombre de plantes ne peut pas être null ou égal à zéro.");
             }
             planteService.updateNbP(id_plante, nb);
-        cult.setNb_planter(nb);
+            cult.setNb_planter(nb);
 
-        Double s = cultureRequest.getSurface_c();
+            Double s = cultureRequest.getSurface_c();
             // Modification de la surface de la parcelle si différente de zéro
             if (s == null || s == 0.0) {
                 throw new IllegalArgumentException("La surface ne peut pas être null ou égal à zéro.");
@@ -77,56 +76,56 @@ public class CultureService {
             if (!surf) {
                 throw new RuntimeException("Erreur lors de l'ajout de la surface de la parcelle.");
             }
-        cult.setSurface_c(s);
-        cult.setResultat_c(cultureRequest.getResultat_c());
+            cult.setSurface_c(s);
+            cult.setResultat_c(cultureRequest.getResultat_c());
 
-        CultureEntity saveData = cultureRepository.save(cult);
+            CultureEntity saveData = cultureRepository.save(cult);
 
-        //mampiditra anle culture any am calendrier sy stade_P
-        if(saveData != null){
+            // mampiditra anle culture any am calendrier sy stade_P
+            if (saveData != null) {
 
-            CalendrierEntity calendrier = new CalendrierEntity();
+                CalendrierEntity calendrier = new CalendrierEntity();
 
-            calendrier.setPlante(plante);
-            calendrier.setActivite("Cultivation de "+variete);
-            calendrier.setDate_debut(cult.getDate_plantation());
-            calendrier.setDate_fin(cult.getDate_recolte());
-            calendrier.setDescription("Plantation de plante de type "+type_plante+" et de variété "+variete);
+                calendrier.setPlante(plante);
+                calendrier.setActivite("Cultivation de " + variete);
+                calendrier.setDate_debut(cult.getDate_plantation());
+                calendrier.setDate_fin(cult.getDate_recolte());
+                calendrier.setDescription("Plantation de plante de type " + type_plante + " et de variété " + variete);
 
-            CalendrierEntity savedCalendrier = calendrierRepository.save(calendrier);
+                CalendrierEntity savedCalendrier = calendrierRepository.save(calendrier);
 
-            Integer id_calendrier = savedCalendrier.getId_calendrier();
+                Integer id_calendrier = savedCalendrier.getId_calendrier();
 
+                // ajout ao am stade
+                Stade_pEntity stade = new Stade_pEntity();
 
-                    //ajout ao am stade
-                    Stade_pEntity stade = new Stade_pEntity();
+                Integer id_cultiver = saveData.getId_cultiver();
 
-                    Integer id_cultiver = saveData.getId_cultiver();
+                CultureEntity cu = new CultureEntity();
+                cu.setId_cultiver(id_cultiver);
 
-                    CultureEntity cu = new CultureEntity();
-                    cu.setId_cultiver(id_cultiver);
+                stade.setCulture(cu);
+                stade.setEtape("Germation");
+                stade.setDate_debut(cult.getDate_plantation());
 
-                    stade.setCulture(cu);
-                    stade.setEtape("Germation");
-                    stade.setDate_debut(cult.getDate_plantation());
+                Stade_pEntity st = stade_pRepository.save(stade);
 
-                    Stade_pEntity st = stade_pRepository.save(stade);
-
-                    Integer id_stade = st.getId_stade();
+                Integer id_stade = st.getId_stade();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to add culture", e);
         }
-
-
-
     }
 
-    public void doRecolte(Integer id_cultiver, CultureRequest cultureRequest){
-        Optional<CultureEntity> cu = cultureRepository.findById(id_cultiver);
-        if(!cu.isPresent()){
-            throw new EntityNotFoundException("CultureEntity with id " + id_cultiver + " not found");
-        }
-        CultureEntity cult = cu.get();
+    public void doRecolte(Integer id_cultiver, CultureRequest cultureRequest) {
+        try {
+            Optional<CultureEntity> cu = cultureRepository.findById(id_cultiver);
+            if (!cu.isPresent()) {
+                throw new EntityNotFoundException("CultureEntity with id " + id_cultiver + " not found");
+            }
+            CultureEntity cult = cu.get();
 
-             //ilaina any am calendrier
+            // ilaina any am calendrier
             Integer id_plante = cult.getPlante().getId_plante();
             String variete = planteRepository.getVar(id_plante);
             String type_plante = planteRepository.getByIdP(id_plante);
@@ -136,94 +135,113 @@ public class CultureService {
 
             Double produit = cultureRequest.getProduit_kg();
 
-        cult.setDate_recolte(cultureRequest.getDate_recolte());
-        cult.setProduit_kg(produit);
+            cult.setDate_recolte(cultureRequest.getDate_recolte());
+            cult.setProduit_kg(produit);
 
-        //resaka récolte
-        if(nb_cult < produit){
-            String resultat = "Bonne récolte";
-            cult.setResultat_c(resultat);
+            // resaka récolte
+            if (nb_cult < produit) {
+                String resultat = "Bonne récolte";
+                cult.setResultat_c(resultat);
+            } else {
+                String res = "Mauvaise récolte";
+                cult.setResultat_c(res);
+            }
+
+            // mamerina anle surface ho 0
+            Double s = cult.getSurface_c();
+            ParcelleRequest qr = new ParcelleRequest();
+            qr.setType_culture_avant(type_plante);
+            parcelleService.updateParcelle(code_parcelle, qr);
+
+            Boolean surf = parcelleService.updateSurface(code_parcelle, s);
+
+            cult.setSurface_c(0.0);
+
+            CultureEntity saveR = cultureRepository.save(cult);
+
+            if (saveR != null) {
+                CalendrierRequest request = new CalendrierRequest();
+
+                request.setId_plante(id_plante);
+                request.setActivite("Cultivation de " + variete);
+                request.setDate_debut(cult.getDate_plantation());
+                request.setDate_fin(cult.getDate_recolte());
+                request.setDescription("Plantation de plante de type " + type_plante + " et de variété " + variete);
+
+                Integer id_calendrier = calendrierRepository.getId(id_plante);
+
+                calendrierService.updateCalendrier(id_calendrier, request);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to perform harvest", e);
         }
-        else{
-            String res = "Mauvaise récolte";
-            cult.setResultat_c(res);
-        }
-
-        //mamerina anle surface ho 0
-        Double s = cult.getSurface_c();
-        ParcelleRequest qr = new ParcelleRequest();
-        qr.setType_culture_avant(type_plante);
-        parcelleService.updateParcelle(code_parcelle, qr);
-
-        Boolean surf = parcelleService.updateSurface(code_parcelle,s);
-
-        cult.setSurface_c(0.0);
-
-       CultureEntity saveR =  cultureRepository.save(cult);
-
-        if(saveR != null){
-            CalendrierRequest request = new CalendrierRequest();
-
-            request.setId_plante(id_plante);
-            request.setActivite("Cultivation de "+variete);
-            request.setDate_debut(cult.getDate_plantation());
-            request.setDate_fin(cult.getDate_recolte());
-            request.setDescription("Plantation de plante de type "+type_plante+" et de variété "+variete);
-
-            Integer id_calendrier = calendrierRepository.getId(id_plante);
-
-            calendrierService.updateCalendrier(id_calendrier, request);
-
-        }
-
     }
 
-    public List<CultureEntity> getAllC(){
-        return cultureRepository.getAllC();
+    public List<CultureEntity> getAllC() {
+        try {
+            return cultureRepository.getAllC();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to fetch all cultures", e);
+        }
     }
 
-    public List<CultureEntity> getByVariete(String variete){
-        return cultureRepository.getByVariete(variete);
+    public List<CultureEntity> getByVariete(String variete) {
+        try {
+            return cultureRepository.getByVariete(variete);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to fetch cultures by variety: " + variete, e);
+        }
     }
 
     //izay efa namoaka récolte
-    public List<CultureEntity> getFinished(){
-        return  cultureRepository.getFinished();
+    public List<CultureEntity> getFinished() {
+        try {
+            return cultureRepository.getFinished();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to fetch finished cultures", e);
+        }
     }
 
-    public void deleteCulture(Integer id_cultiver){
-        Optional<CultureEntity> cu = cultureRepository.findById(id_cultiver);
-        if(!cu.isPresent()){
-            throw new EntityNotFoundException("CultureEntity with id " + id_cultiver + " not found");
+    public void deleteCulture(Integer id_cultiver) {
+        try {
+            Optional<CultureEntity> cu = cultureRepository.findById(id_cultiver);
+            if (!cu.isPresent()) {
+                throw new EntityNotFoundException("CultureEntity with id " + id_cultiver + " not found");
+            }
+            CultureEntity cult = cu.get();
+
+            Integer code_parcelle = cult.getParcelle().getCode_parcelle();
+
+            Integer id_plante = cult.getPlante().getId_plante();
+
+            String type_plante = planteRepository.getByIdP(id_plante);
+
+            Double s = cult.getSurface_c();
+            ParcelleRequest qr = new ParcelleRequest();
+            qr.setType_culture_avant(type_plante);
+            parcelleService.updateParcelle(code_parcelle, qr);
+
+            Boolean surf = parcelleService.updateSurface(code_parcelle, s);
+
+            cult.setSurface_c(0.0);
+
+            cultureRepository.save(cult);
+
+            stade_pService.deleteStade(id_cultiver);
+
+            cultureRepository.delete(cult);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to delete culture with id " + id_cultiver, e);
         }
-        CultureEntity cult = cu.get();
-
-        Integer code_parcelle = cult.getParcelle().getCode_parcelle();
-
-        Integer id_plante = cult.getPlante().getId_plante();
-
-        String type_plante = planteRepository.getByIdP(id_plante);
-
-
-        Double s = cult.getSurface_c();
-        ParcelleRequest qr = new ParcelleRequest();
-        qr.setType_culture_avant(type_plante);
-        parcelleService.updateParcelle(code_parcelle, qr);
-
-        Boolean surf = parcelleService.updateSurface(code_parcelle,s);
-
-        cult.setSurface_c(0.0);
-
-       cultureRepository.save(cult);
-
-        stade_pService.deleteStade(id_cultiver);
-
-        cultureRepository.delete(cult);
     }
 
     //get by date
-    public List<CultureEntity> getByMonth(Integer mois){
-        return cultureRepository.getByDate(mois);
+    public List<CultureEntity> getByMonth(Integer mois) {
+        try {
+            return cultureRepository.getByDate(mois);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to fetch cultures for month: " + mois, e);
+        }
     }
 
 

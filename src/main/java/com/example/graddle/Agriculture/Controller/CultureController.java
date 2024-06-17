@@ -48,6 +48,7 @@ public class CultureController {
         return cultureDTOS;
     }
 
+    //ito koa get niova post
     @GetMapping("/getByVar/{variete}")
     public List<CultureDTO> getByVariete(@PathVariable  String variete){
 
@@ -89,6 +90,7 @@ public class CultureController {
         }
         return cultureDTOS;    }
 
+    //get niova post
     @GetMapping("/getByMonth/{mois}")
     public List<CultureDTO> getByMonth(@PathVariable Integer mois){
 

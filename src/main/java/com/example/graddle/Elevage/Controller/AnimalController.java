@@ -109,7 +109,8 @@ public class AnimalController {
     @GetMapping("/nbVendu/{espece}")
     public  Integer nbVendu( @PathVariable String espece){ return animalService.nbVendu(espece); }
 
-    @GetMapping("/diagC")
+    //get lasa post
+    @PostMapping("/diagC")
     public Double diagCroiss ( @RequestBody CroissanceRequest request){ return  animalService.diagCroiss(request); }
 
     @GetMapping("/diagAni/{espece}")
